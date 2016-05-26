@@ -13,7 +13,7 @@ In this environment, the agent's objective is to gather ammo.
 ![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
 
 ## Instructions
-* To start training, run:
+* To start training see:
 ```
 ./runner.sh
 ```
