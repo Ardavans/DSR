@@ -9,9 +9,6 @@ In this environment, the agent's objective is to gather ammo.
 ### Environment (video walkthrough) 
 [![doom play 3roomsbest](http://img.youtube.com/vi/QcIwm-ucGgo/0.jpg)](https://youtu.be/QcIwm-ucGgo "dsr")
 
-### Agent with random policy
-![DSR random policy](http://i.imgur.com/jM4XL7B.gif)
-
 ### Policy after learning 
 ![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
 
