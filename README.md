@@ -11,7 +11,7 @@ In this environment, the agent's objective is to gather ammo.
 
 ### Agent with random policy
 
-[url=http://imgur.com/j51Cg3t][img]http://i.imgur.com/j51Cg3t.gif?1[/img][/url]
+[img]http://i.imgur.com/j51Cg3t.gif?1[/img]
 
 # Acknowledgements
 * [Deepmind's DQN codebase](https://github.com/kuz/DeepMind-Atari-Deep-Q-Learner)
