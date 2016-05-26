@@ -13,7 +13,7 @@ In this environment, the agent's objective is to gather ammo.
 ![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
 
 ### Agent with random policy
-![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
+![DSR after convergence](http://i.imgur.com/jM4XL7B.gif)
 
 # Acknowledgements
 * [Deepmind's DQN codebase](https://github.com/kuz/DeepMind-Atari-Deep-Q-Learner)
