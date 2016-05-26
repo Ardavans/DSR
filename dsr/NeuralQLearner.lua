@@ -1,23 +1,9 @@
---[[
-Copyright (c) 2014 Google Inc.
-
-See LICENSE file for full terms of limited license.
-]]
-
 if not dsr then
     require 'initenv'
 end
 require 'pprint'
 local nql = torch.class('dsr.NeuralQLearner')
 local debug = require("debugger")
-
--- ZMQ_PORT = '1728'
--- local zmq = require "lzmq"
--- ctx = zmq.context()
--- skt = ctx:socket{zmq.REQ,
---     linger = 0, rcvtimeo = 1000;
---     connect = "tcp://127.0.0.1:" .. ZMQ_PORT;
--- }
 
 require 'csvigo'
 
@@ -288,7 +274,6 @@ function nql:getQUpdate(args)
         self.target_network:forward(s)
         ftrs = self.target_network.modules[#self.target_network.modules].modules[2].output:clone()
 
-        --print('ftrs', ftrs[1]:sum(), '| reward: ', r[1])
         -- Compute max_a M(s_2, a).
         m2, r2 = unpack(self.target_network:forward(s2))
         ftrs2 = self.target_network.modules[#self.target_network.modules].modules[2].output:clone()
@@ -369,11 +354,9 @@ function nql:getQUpdate(args)
             ftrs_final[a[i]][i] = ftrs[i]:clone()
         end
 
-        -- print (ftrs_final[1])
         delta_m = ftrs_final
         for i=1,#m_pred do
-            -- delta_m[i]:add(m2_final[i])
-            -- delta_m[i]:add(-m_pred[i]) 
+
             delta_m[i]:add(m_pred[i]:clone()) 
         end
 
@@ -390,13 +373,6 @@ function nql:getQUpdate(args)
                 end
         end
 
-        -- if a[1]==2 and term[1] == 1 then-- term[1] == 0 then
-                -- print('------------------')
-                -- print(' ftrs:', ftrs[1]:clone():reshape(1,10))
-                -- print(' m targ:', m2_tmp[1]:clone():reshape(1,10))
-                -- print(' m pred:', m_all[2][1]:clone():reshape(1,10))
-                -- print('delta_m:', delta_m[2][1]:clone():reshape(1,10))
-        -- end
     else
         
 
@@ -425,14 +401,8 @@ function nql:getQUpdate(args)
         end
 
         delta_r = torch.reshape(delta_r, delta_r:size(1), 1)
-        if true then --a[1]==2 and term[1] == 0 then-- term[1] == 0 then
-            -- print('------------------')
+        if false then --a[1]==2 and term[1] == 0 then-- term[1] == 0 then
             local num_displays = 12
-            -- -- --print(' r pred:', rpred_s2[1][1], 'true r: ', r[1], 'delta r: ', delta_r[1])
-            -- disp.image(s2[{{1, num_displays}}]:reshape(num_displays, self.ncols, 84,84), {win=1, title='observed'})
-            -- disp.image(reconstruction[{{1, num_displays}}]:reshape(num_displays, 84,84), {win=2, title='predictions'})
-            -- -- disp.image(sr_reconstruction[{{1, num_displays}}]:reshape(num_displays, 84,84), {win=7, title='Succesor Map'})
-
 
             local s2_vis = s2[{{1,num_displays}}]:reshape(num_displays, self.hist_len*self.ncols, 84,84)
             s2_vis = s2_vis[{{},{1,self.ncols},{},{}}];disp.image(s2_vis, {win=1, title='observed'})
@@ -447,7 +417,6 @@ function nql:getQUpdate(args)
         reconstruction = reconstruction:cuda()
     end
 
-    -- debug()
     return delta_r, delta_m, m2_max, reconstruction
 end
 
@@ -472,9 +441,6 @@ function nql:motionScaling(s2, grads)
         residual[{{},i,{},{}}] = torch.ge(residual[{{},i,{},{}}], 0.01) * (scaling-1)
         residual[{{},i,{},{}}] = residual[{{},i,{},{}}] + 1.0
     end
-    -- local res = residual:clone()
-    -- res = res[{{1, 4}}]:reshape(4, self.hist_len , 84,84); res = res[{{},1,{},{}}]
-    -- disp.image(res, {win=5, title='gradient scaling'})
 
     residual = residual:reshape(self.minibatch_size*self.input_dims[1]*self.input_dims[2]*self.input_dims[3])
     grads = grads:cmul(residual)
@@ -499,7 +465,6 @@ function nql:qLearnMinibatch(mode)
                 for ii=1,buf_len do
                     s2[self.minibatch_size-buf_len+ii] = self.s2_buf[rindxs[ii]]
                     r[self.minibatch_size-buf_len+ii] = self.reward_buf[rindxs[ii]]
-                    -- print(self.minibatch_size-buf_len+ii, rindxs[ii])
                 end
             else
                 for ii = 1,buf_len do
@@ -535,14 +500,6 @@ function nql:qLearnMinibatch(mode)
     if self.gpu >= 0 then delta_r_tmp = delta_r_tmp:cuda() end
 
     if mode == 'reward' then
-        -- print(s2_flatten:min(), s2_flatten:max(), reconstruction:min(), reconstruction:max())
-        -- gradCriterion:zero()
-        -- print(gradCriterion:norm())
-        -- local mean = s2:mean()
-        -- local std = s2:std()
-        -- local s2_normalized = s2:clone()
-        -- s2_normalized:add(-mean); s2_normalized:div(std)
-        -- delta_r:zero()
         self.network:backward(s2, {delta_m_tmp, {delta_r, gradCriterion} })
     end
 
@@ -550,7 +507,6 @@ function nql:qLearnMinibatch(mode)
         -- in getQUpdate, the last forward call is with s2, so backward delta_r
         -- self.network:forward(s)
         gradCriterion:zero()
-        -- print(gradCriterion:size(), delta_r_tmp:size())
         self.network:backward(s, {delta_m, {delta_r_tmp, gradCriterion}})
     end
 
@@ -628,18 +584,11 @@ end
 
 
 function nql:perceive(reward, rawstate, terminal, testing, testing_ep)
-    -- self.network:evaluate()
-    -- self.target_network:evaluate()
-    -- disp.image(rawstate, {win=1, title='batches'})
 
     -- Preprocess state (will be set to nil if terminal)
     local state = self:preprocess(rawstate, self.ncols==1):float()
-    -- print(rawstate:sum(), state:sum())
 
     local curState
-    -- display_state = torch.Tensor(state:reshape(84,84))
-    -- print (#display_state)
-    -- win = image.display({image=display_state, win=win})
 
     if self.max_reward then
         reward = math.min(reward, self.max_reward)
@@ -736,15 +685,6 @@ function nql:eGreedy(state, testing, testing_ep)
     self.ep = testing_ep or (self.ep_end +
                 math.max(0, (self.ep_start - self.ep_end) * (self.ep_endt -
                 math.max(0, self.numSteps - self.learn_start))/self.ep_endt))
-    -- local action = 0
-    -- if self.debugging_counter % 3 == 1 then
-    --     action = 4
-    -- else 
-    --     action = 2
-    -- end
-    -- action = 2
-    -- self.debugging_counter = self.debugging_counter + 1
-    -- return action
 
     -- Epsilon greedy
     if torch.uniform() < self.ep then
@@ -770,48 +710,19 @@ function nql:greedy(state, testing)
 
     local m_tab, r_tab = unpack(self.network:forward(state))
     m_tab_pred = {}
-    -- r_tab_pred = {}
-    --print('----------------------------')
+
     for i=1,#m_tab do
         m_tab_pred[i] = m_tab[i]:float()
-        -- print(m_tab_pred[i]:sum())
-        -- print(r_tab[1])
     end
-    -- if testing then
-    --     print('OPTIMAL:', optimal_act, ' r:', r_tab[1][1])
-    -- end
-    -- for i=1,#r_tab do
-    --     r_tab_pred[i] = r_tab[i]:float()
-    -- end
+
 
     local reward_weights = self.network.modules[#self.network.modules].modules[5].modules[2].modules[3].modules[1].modules[2].weight:clone():float()
     local max_score = torch.dot(m_tab_pred[1], reward_weights)
     local besta = {1}
-    --dbg()
-    -- print("Woo!")
-
-    ---only for debugging
-    if testing then
-        -- print(m_tab_pred[1]:size())
-        -- print('state_sum', state:sum())
-        -- print('m_sum: ', m_tab_pred[1]:sum())
-        -- print('w_sum: ', reward_weights[1]:sum())
-        -- print('predicted reward: ', r_tab[1][1][1])
-        -- print('action: ', 1, '| score: ', max_score)
-    end
 
     -- Evaluate all other actions (with random tie-breaking)
     for a = 2, self.n_actions do
         local score = torch.dot(m_tab_pred[a], reward_weights)
-
-        -- only for debugging
-        -- if testing then --this means we are testing and minibatchsize is 1
-        --     print('--------------')
-        --     print('m_sum: ', m_tab_pred[a])
-        --     print('r weights:', reward_weights)
-        --     print('predicted reward: ', r_tab[1])
-        --     print('action: ', a, '| score: ', score)   
-        -- end
 
         if score > max_score then
             besta = { a }
@@ -821,28 +732,9 @@ function nql:greedy(state, testing)
             besta[#besta+1] = a
         end
     end
-    -- print ('------------------')
-
     self.bestq = max_score
-    -- print (self.bestq)
-
     local tie_break_r = torch.random(1, #besta)
-
-    -- besta[r] = io.read("*n")
-    -- print('m_sum', m_pred[besta[r]]:sum())
-    -- print('s last rows', state[1][1][80])
-    -- print('reward', r_pred)
-    -- print('action: ', besta[tie_break_r], ' | score:', max_score)
-
     self.lastAction = besta[tie_break_r]
-
-    ---only for debugging
-    -- if testing then
-    --     -- print('best action: ', self.lastAction)
-    --     -- print('-----------')
-    --     -- print('')
-    -- end
-    -- print('max_score', max_score, ' action', self.lastAction)
     return besta[tie_break_r]
 end
 

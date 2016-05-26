@@ -51,7 +51,6 @@ cmd:text()
 local opt = cmd:parse(arg)
 disp = require 'display'
 disp.configure({port=opt.seed})
---ZMQ_PORT = '5550'
 
 --- General setup.
 local game_env, game_actions, agent, opt = setup(opt)
@@ -108,9 +107,6 @@ while step < opt.steps do
             screen, reward, terminal = game_env:newGame()
         end
     end
-    -- if reward > 0 then
-    --     print('REWARD:', reward)
-    -- end
 
     -- display screen
     -- win = image.display({image=screen, win=win})
@@ -220,10 +216,6 @@ while step < opt.steps do
         disp.plot(v_plot_data, {win=5, title='Average Q', xlabel = 'Steps'})
         disp.plot(td_plot_data, {win=6, title='Average TD Error', xlabel = 'Steps'})
 
-        -- file = io.open ('results/rewards.txt', 'a')
-        -- file:write(total_reward)
-        -- file:write('\n')
-        -- file:close()
 
         print(string.format(
             '\nSteps: %d (frames: %d), reward: %.2f, epsilon: %.2f, lr: %G, ' ..

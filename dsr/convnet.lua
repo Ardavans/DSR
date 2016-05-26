@@ -1,9 +1,3 @@
---[[
-Copyright (c) 2014 Google Inc.
-
-See LICENSE file for full terms of limited license.
-]]
-
 require "initenv"
 
 function create_network(args)
@@ -51,45 +45,12 @@ function create_network(args)
         net:add(args.nl())
     end
 
-    -- add the last fully connected layer (to actions)
-    -- net:add(nn.Linear(last_layer_size, args.n_actions))
-        
-    --- succesor representation module ---
-    -- local sr_splitter = nn.Sequential()
-    --     sr_splitter:add(nn.Linear(last_layer_size, 256))
-
-    --     sr_splitter:add(nn.Replicate(2)) -- one goes to reward and other to SR
-    --     sr_splitter:add(nn.SplitTable(1))
-    --     sr_fork = nn.ParallelTable();
-    --         local sr_output_ftrs_dimensions = 64
-    --         srnet = nn.Sequential()
-    --             srnet:add(nn.Linear(256, sr_output_ftrs_dimensions))
-    --             srnet:add(args.nl())
-    --             srnet:add(nn.Replicate(args.n_actions))
-    --             srnet:add(nn.SplitTable(1))
-    --             srnet_fork = nn.ParallelTable()
-    --                 for i=1,args.n_actions do
-    --                     srnet_fork:add(nn.Linear(sr_output_ftrs_dimensions, sr_output_ftrs_dimensions))
-    --                 end
-    --             srnet:add(srnet_fork)
-    --         sr_fork:add(srnet) -- SR prediction
-
-    --         rnet = nn.Sequential()
-    --             rnet:add(nn.Linear(256,sr_output_ftrs_dimensions))
-    --             rnet:add(args.nl())
-    --             rnet:add(nn.Linear(sr_output_ftrs_dimensions, 1))
-    --             rnet:add(nn.Identity())
-    --         sr_fork:add(rnet) -- reward prediction
-    --     sr_splitter:add(sr_fork) 
-    -- net:add(sr_splitter)
 
     local sr_splitter = nn.Sequential()
         local sr_output_ftrs_dimensions = args.srdims-- 10
         sr_splitter:add(nn.Linear(last_layer_size, sr_output_ftrs_dimensions))
         sr_splitter:add(nn.Tanh())--args.nl())
     
-        -- sr_splitter:add(nn.Linear(512, sr_output_ftrs_dimensions))
-        -- sr_splitter:add(args.nl())
         sr_splitter:add(nn.Replicate(2)) -- one goes to reward and other to SR
         sr_splitter:add(nn.SplitTable(1))
         sr_fork = nn.ParallelTable();
@@ -107,8 +68,6 @@ function create_network(args)
                         mnet_fork:add(args.nl())
                         mnet_fork:add(nn.Linear(256, sr_output_ftrs_dimensions))
 
-                        -- mnet_fork:add(nn.Tanh())--args.nl())
-                        -- srnet_fork:add(nn.Linear(sr_output_ftrs_dimensions, sr_output_ftrs_dimensions))
                         mnet_subnets:add(mnet_fork)
                     end
             mnet:add(mnet_subnets)
