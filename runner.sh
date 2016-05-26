@@ -1,7 +1,8 @@
 echo 'Uncomment lines for running particular scenarios'
 
 # To run MazeBase uncomment any of the following
-#./run_gpu MovingGoalsMedium 8000 dsr 1 5000 500 1 256
+#./run_gpu MovingGoals 8000 dsr 1 5000 500 1 256
+#./run_gpu MovingGoalsEasy 8000 dsr 1 5000 500 1 256
 #./run_gpu MovingGoalsMedium 8000 dsr 1 5000 500 1 256
 
 # To run doom
