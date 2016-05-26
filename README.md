@@ -7,13 +7,13 @@ DSR has several appealing properties including: increased sensitivity to distal 
 ## Results on Doom (VizDoom)
 In this environment, the agent's objective is to gather ammo. 
 ### Environment (video walkthrough) 
-[![doom play 3roomsbest](http://img.youtube.com/vi/QcIwm-ucGgo/0.jpg)](https://youtu.be/QcIwm-ucGgo "Everything Is AWESOME")
+[![doom play 3roomsbest](http://img.youtube.com/vi/QcIwm-ucGgo/0.jpg)](https://youtu.be/QcIwm-ucGgo "dsr")
+
+### Agent with random policy
+![DSR random policy](http://i.imgur.com/jM4XL7B.gif)
 
 ### Policy after learning 
 ![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
-
-### Agent with random policy
-![DSR after convergence](http://i.imgur.com/jM4XL7B.gif)
 
 # Acknowledgements
 * [Deepmind's DQN codebase](https://github.com/kuz/DeepMind-Atari-Deep-Q-Learner)
