@@ -5,9 +5,15 @@ DSR is a hybrid model-free and model-based deep RL algorithm to learn robust val
 DSR has several appealing properties including: increased sensitivity to distal reward changes due to factorization of reward and world dynamics, and the ability to extract bottleneck states (subgoals) given successor maps trained under a random policy. 
 
 ## Results on Doom (VizDoom)
-### Environment
+In this environment, the agent's objective is to gather ammo. 
+### Environment (video walkthrough) 
 [![doom play 3roomsbest](http://img.youtube.com/vi/QcIwm-ucGgo/0.jpg)](https://youtu.be/QcIwm-ucGgo "Everything Is AWESOME")
-[![ScreenShot](https://raw.github.com/GabLeRoux/WebMole/master/ressources/WebMole_Youtube_Video.png)](https://youtu.be/QcIwm-ucGgo)
+
+### Agent with random policy
+![DSR random policy](http://i.imgur.com/crRpl60.gif)
+
+### Policy after learning
+![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
 
 # Acknowledgements
 * [Deepmind's DQN codebase](https://github.com/kuz/DeepMind-Atari-Deep-Q-Learner)
