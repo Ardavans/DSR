@@ -4,7 +4,7 @@ DSR is a hybrid model-free and model-based deep RL algorithm to learn robust val
 
 DSR has several appealing properties including: increased sensitivity to distal reward changes due to factorization of reward and world dynamics, and the ability to extract bottleneck states (subgoals) given successor maps trained under a random policy. 
 
-## Results on Doom (VizDoom)
+## Illustration on Doom (VizDoom)
 In this environment, the agent's objective is to gather ammo. 
 ### Environment (video walkthrough) 
 [![doom play 3roomsbest](http://img.youtube.com/vi/QcIwm-ucGgo/0.jpg)](https://youtu.be/QcIwm-ucGgo "dsr")
