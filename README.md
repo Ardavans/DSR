@@ -10,7 +10,8 @@ In this environment, the agent's objective is to gather ammo.
 [![doom play 3roomsbest](http://img.youtube.com/vi/QcIwm-ucGgo/0.jpg)](https://youtu.be/QcIwm-ucGgo "Everything Is AWESOME")
 
 ### Agent with random policy
-![DSR random](http://i.imgur.com/j51Cg3t.gif)
+
+![](http://i.imgur.com/j51Cg3t.gif)
 
 # Acknowledgements
 * [Deepmind's DQN codebase](https://github.com/kuz/DeepMind-Atari-Deep-Q-Learner)
