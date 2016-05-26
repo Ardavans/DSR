@@ -13,10 +13,12 @@ In this environment, the agent's objective is to gather ammo.
 ![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
 
 ## Instructions
+* To start training, run:
 ```
 ./runner.sh
 ```
-
+* Insructions to obtain subgoals from trained network: TODO
+ 
 # Acknowledgements
 * [Deepmind's DQN codebase](https://github.com/kuz/DeepMind-Atari-Deep-Q-Learner)
 * [Facebook's MazeBase Environment](https://github.com/facebook/MazeBase).
