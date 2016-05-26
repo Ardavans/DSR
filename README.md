@@ -17,7 +17,7 @@ In this environment, the agent's objective is to gather ammo.
 ```
 ./runner.sh
 ```
-* Insructions to obtain subgoals from trained network: TODO
+* Insructions to run subgoal scripts coming soon
  
 # Acknowledgements
 * [Deepmind's DQN codebase](https://github.com/kuz/DeepMind-Atari-Deep-Q-Learner)
