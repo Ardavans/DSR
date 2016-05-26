@@ -12,7 +12,7 @@ In this environment, the agent's objective is to gather ammo.
 ### Agent with random policy
 ![DSR random policy](http://i.imgur.com/crRpl60.gif)
 
-### Policy after learning
+### Policy after learning 
 ![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
 
 # Acknowledgements
