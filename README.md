@@ -7,10 +7,10 @@ DSR has several appealing properties including: increased sensitivity to distal 
 ## Results on Doom (VizDoom)
 In this environment, the agent's objective is to gather ammo. 
 ### Environment (video walkthrough) 
-![doom play 3roomsbest](http://img.youtube.com/vi/QcIwm-ucGgo/0.jpg)](https://youtu.be/QcIwm-ucGgo "Everything Is AWESOME")
+[![doom play 3roomsbest](http://img.youtube.com/vi/QcIwm-ucGgo/0.jpg)](https://youtu.be/QcIwm-ucGgo "Everything Is AWESOME")
 
 ### Agent with random policy
-![random](http://i.imgur.com/crRpl60.gif)
+![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
 
 ### Policy after learning 
 ![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
