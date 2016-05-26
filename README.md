@@ -4,7 +4,9 @@ DSR is a hybrid model-free and model-based deep RL algorithm to learn robust val
 
 DSR has several appealing properties including: increased sensitivity to distal reward changes due to factorization of reward and world dynamics, and the ability to extract bottleneck states (subgoals) given successor maps trained under a random policy. 
 
-## Code coming shortly ... 
+## Results on Doom (VizDoom)
+### Environment
+[![doom play 3roomsbest](http://img.youtube.com/vi/QcIwm-ucGgo/0.jpg)](https://youtu.be/QcIwm-ucGgo "Everything Is AWESOME")
 
 # Acknowledgements
 * [Deepmind's DQN codebase](https://github.com/kuz/DeepMind-Atari-Deep-Q-Learner)
