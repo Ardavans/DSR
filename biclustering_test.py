@@ -1,54 +1,41 @@
-import zmq
-import sys
+import sys, math
+import h5py
+
+import matplotlib.pyplot as plt
 import numpy as np
 from numpy import genfromtxt
-import h5py
-import math
 
-from sklearn.cluster.bicluster import SpectralCoclustering
 from sklearn.cluster import KMeans
 from sklearn.cluster import SpectralClustering
 from sklearn.mixture import DPGMM
 from sklearn.decomposition import PCA
 
+from collections import defaultdict
 from PIL import Image, ImageChops
 
-# name = sys.argv[1]
-# name_m2 = 'm2_dsr_DSR_DQN_Bottleneck_seed_1729_game_Bottleneck2Rooms'
-# name_s = 's_dsr_DSR_DQN_Bottleneck_seed_1729_game_Bottleneck2Rooms'
-name_m2 = 'Bottleneck4_m' 
-# name_s = 's_Bottleneck2Rooms'
-name_s = 'Bottleneck4_s'
-tmp_path_m2 = '/home/cocosci/simanta/DeepSR/' + name_m2 + '.h5'
-tmp_path_s = '/home/cocosci/simanta/DeepSR/' + name_s + '.h5'
-
+path_SR = 'Bottleneck4_m.h5'
+path_state = 'Bottleneck4_s.h5'
 
 def get_clusters(data, k):
-
-	# print data.shape
-	# pca = PCA(n_components=3)
-	# X_red = pca.fit_transform(data)
-
-	# print X_red.shape
-	# model = SpectralClustering(n_clusters=k, gamma = 0.1)
-	# model = KMeans(n_clusters=k)
-	model = DPGMM(n_components = 10)
+	model = SpectralClustering(n_clusters=k, gamma = 0.3)
+	# model = DPGMM(n_components = k)
 	return model.fit_predict(data)
 	# model.fit(data)
 	# return model.row_labels_
 
-def parse(path):
-	# converts csv file written by lua to a numpy array
+def parse_csv(path):
+	# csv to numpy array
 	data = genfromtxt(path, delimiter=',')
 	return data
 
 def parse_hd5(path, name):
+	# csv to numpy array
 	myFile = h5py.File(path, 'r')
 	data = myFile[name]
 	data = np.array(data)
 	return data
 
-def show_image(full_data, indices):
+def show_image(full_data, indices, name):
 	# try:
 	data = []
 	for i in indices:
@@ -57,9 +44,10 @@ def show_image(full_data, indices):
 	data = np.mean(data, axis = 0)
 	print data.shape
 	im = Image.fromarray(255*data)
-	im.show()
 	# except:
 	# 	print 'empty indices'
+	im = im.convert('L')
+	im.save(name)
 
 def show_image_chops(full_data, indices):
 	try:
@@ -72,7 +60,6 @@ def show_image_chops(full_data, indices):
 			try:
 				im = ImageChops.multiply(im,im_temp)
 			except:
-				print "hello"
 				im = im_temp
 		im.show()
 	except:
@@ -89,110 +76,46 @@ def get_unique_states(data_s):
 			unique_index_list.append(i)
 	return unique_index_list
 
+def map_unique_indices(data, indices):
+	unique_map = []
+	for i in indices:
+		unique_map.append(data[i])
+	return np.array(unique_map)
 
-data_s = parse_hd5(tmp_path_s, 's_full_tensor')
-data_m2 = parse_hd5(tmp_path_m2, 'm_full_tensor')
-print '...getting unique states'
-unique_index_list = [i for i in range(19000)]
-# print unique_index_list
-# print len(unique_index_list)
+def get_clustered_states(data_set, k, cluster_labels):
+	clustered_states = defaultdict(list)
+	for i,label in enumerate(cluster_labels):
+		# clustered_states[label].append(data_set[i])
+		clustered_states[label].append(i)
+	return clustered_states
 
-index_mapping = {}
-for i,unique_i in enumerate(unique_index_list):
-	index_mapping[i] = unique_i
+def show_cluster(clustered_states):
 
-unique_data_m2 = []
-for i in unique_index_list:
-	unique_data_m2.append(data_m2[i+1])
-unique_data_m2 = np.array(unique_data_m2)
-# print '-----------------------------------'
-# im = Image.fromarray(255*unique_data_m2)
-# im.show()
-# print unique_data_m2.shape
+	fin_image = Image.fromarray(255*clustered_states[0].reshape(84,84))
+	fin_image = fin_image.convert('L')
+	for i in range(1,len(clustered_states)):
+		cur_image = Image.fromarray(255*clustered_states[i].reshape(84,84))
+		cur_image = cur_image.convert('L')
+		fin_image = ImageChops.darker(fin_image, cur_image)
 
-
-# # show_image_chops(data_s, [i for i in range(len(data_s))])
-
-print '...getting clusters'
-clusters = get_clusters(unique_data_m2, 4)
-print '...got clusters'
-
-zero_indices = []
-one_indices = []
-two_indices = []
-three_indices = []
-four_indices = []
-five_indices = []
-six_indices = []
-seven_indices = []
+	fin_image.show()
 
 
-for i, cluster in enumerate(clusters):
-	if cluster == 0:
-		zero_indices.append(i)
-	elif cluster == 1:
-		one_indices.append(i)
-	elif cluster == 2:
-		two_indices.append(i)
-	elif cluster == 3:
-		three_indices.append(i)
-	elif cluster == 4:
-		four_indices.append(i)
-	elif cluster == 5:
-		five_indices.append(i)
-	elif cluster == 6:
-		six_indices.append(i)
-	elif cluster == 7:
-		seven_indices.append(i)
+if __name__ == '__main__':
+	print '...loading states'
+	data_s = parse_hd5(path_state, 's_full_tensor')[:10000]
 
-unique_zero_indices = []
-for i in zero_indices:
-	unique_zero_indices.append(index_mapping[i])
+	print '...loading successors'
+	data_m2 = parse_hd5(path_SR, 'm_full_tensor')[:10000]
 
-unique_one_indices = []
-for i in one_indices:
-	unique_one_indices.append(index_mapping[i])
+	print '...getting clusters'
+	clusters = get_clusters(data_m2, 4)
 
-unique_two_indices = []
-for i in two_indices:
-	unique_two_indices.append(index_mapping[i])
+	n_clusters = len(set(clusters))
+	print n_clusters
 
-unique_three_indices = []
-for i in three_indices:
-	unique_three_indices.append(index_mapping[i])
+	clustered_states = get_clustered_states(data_s, n_clusters, clusters)
 
-unique_four_indices = []
-for i in four_indices:
-	unique_four_indices.append(index_mapping[i])
-
-unique_five_indices = []
-for i in five_indices:
-	unique_five_indices.append(index_mapping[i])
-
-unique_six_indices = []
-for i in six_indices:
-	unique_six_indices.append(index_mapping[i])
-
-unique_seven_indices = []
-for i in seven_indices:
-	unique_seven_indices.append(index_mapping[i])	
-
-show_image(data_s, unique_zero_indices)
-show_image(data_s, unique_one_indices)
-show_image(data_s, two_indices)
-show_image(data_s, three_indices)
-show_image(data_s, four_indices)
-show_image(data_s, five_indices)
-show_image(data_s, six_indices)
-show_image(data_s, seven_indices)
-
-# # return_string = 'clusters = {'
-
-# # for i in clusters:
-# # 	return_string += str(i) + ','
-# # clusters = clusters[:-1]
-
-# # return_string += '}'
-# # print return_string
-
+	for label,cluster in clustered_states.items():
+		show_image(data_s, cluster, str(label)+'.bmp')
 

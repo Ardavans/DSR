@@ -2,10 +2,9 @@ if not dsr then
     require 'initenv'
 end
 require 'pprint'
+require 'hdf5'
 local nql = torch.class('dsr.NeuralQLearner')
 local debug = require("debugger")
-
-require 'csvigo'
 
 function nql:__init(args)
 
@@ -69,6 +68,9 @@ function nql:__init(args)
     self.network    = args.network or self:createNetwork()
 
     self.debugging_counter = 0
+
+    self.num_samples = args.num_samples
+    self.sample_collect = args.sample_collect
     -- check whether there is a network file
     local network_function
     if not (type(self.network) == 'string') then
@@ -584,6 +586,49 @@ end
 
 
 function nql:perceive(reward, rawstate, terminal, testing, testing_ep)
+
+    local chunk_size = 100
+    if self.sample_collect and self.numSteps >= self.num_samples and self.numSteps > 2*chunk_size then 
+        -- do a forward pass and extract msa, where a is randomly chosen among set of actions A
+        for i=1,desired_samples/chunk_size do
+
+            local s, a, r, s2, term = self.transitions:sample(chunk_size)
+
+            current_m, current_r = unpack(self.network:forward(s))
+            
+            local random_action_indices = torch.random(torch.zeros(chunk_size),1,4)
+
+            ftrs_len = current_m[1][1]:size(1)
+            m_values = {}
+            s_values = {}
+            for j=1,chunk_size do
+                m_clone_svd = current_m[random_action_indices[j]][j]:reshape(1,ftrs_len):float()
+                s_clone_svd = s[j]:reshape(1,self.state_dim):float()
+                table.insert(m_values, m_clone_svd)
+                table.insert(s_values, s_clone_svd)
+            end
+            
+            merge_m = nn.JoinTable(1)
+            current_m_tensor = merge_m:forward(m_values)
+            merge_s = nn.JoinTable(1)
+            current_s_tensor = merge_s:forward(s_values)
+
+            m_tensor = m_tensor or current_m_tensor
+            s_tensor = s_tensor or current_s_tensor
+
+            merge_m = nn.JoinTable(1)
+            m_tensor = merge_m:forward({m_tensor,current_m_tensor})
+            merge_s = nn.JoinTable(1)
+            s_tensor = merge_s:forward({s_tensor,current_s_tensor})
+
+        end
+        name = '../' .. self.game_name .. '.h5'
+        print ("SAVING")
+        myFile = hdf5.open(name, 'w')
+        myFile:write('m_full_tensor', m_tensor)
+        myFile:write('s_full_tensor', s_tensor)
+        self.sample_collect = 0
+    end
 
     -- Preprocess state (will be set to nil if terminal)
     local state = self:preprocess(rawstate, self.ncols==1):float()

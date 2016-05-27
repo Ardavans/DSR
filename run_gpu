@@ -1,9 +1,9 @@
 #!/bin/bash
 if [ -z "$1" ]
-  then echo "Please provide a game name, seed number, dsr or dqn, gpu id, learn_start, eval_steps, number of color channels, and feature dimension: 
+  then echo "Please provide a game name, seed number, dsr or dqn, gpu id, learn_start, eval_steps, number of color channels, feature dimension, collect data 0/1: 
   ./run_gpu MovingGoalsMedium 8000 dsr 1 5000 500 1 256";
-  #1-game_name 2-seed 3-dsr/dqn 4-gpuid 5-learn_start 6-eval_steps 7-color 8-sr_dims
-  # doom => ./run_gpu doom 8000 dsr 1 30000 10000 3 512
+  #1-game_name 2-seed 3-dsr/dqn 4-gpuid 5-learn_start 6-eval_steps 7-color 8-sr_dims 9-collect_sr
+  # doom => ./run_gpu doom 8000 dsr 1 30000 10000 3 512 0
   exit 0
 fi
 
@@ -14,6 +14,8 @@ if [ "$game_name" = "doom" ]; then
 else
 	FRAMEWORK="../mbwrap/init.lua" #"alewrap"
 fi	
+num_samples=50000
+sample_collect=$9 #if 1 then collects num_samples samples of (SR, raw state) in hdf5
 agent_folder=$3 #'dqn' or 'dsr'
 game_path=$PWD"/roms/"
 env_params="useRGB=true"
@@ -38,7 +40,7 @@ preproc_net="\"net_downsample_2x_full_y\""
 agent_name=$agent_folder"_"$1"_"$2"_"$3"_"$4
 ncols=$7
 state_dim=7056*${ncols}
-agent_params="lr="$lr",ep=1,ep_end="$eps_end",srdims="$srdims",ep_endt="$eps_endt",discount="$discount",hist_len=1,learn_start="$learn_start",replay_memory="$replay_memory",update_freq="$update_freq",n_replay="$n_replay",network="$netfile",preproc="$preproc_net",state_dim="$state_dim",minibatch_size=64,rescale_r=1,ncols="$ncols",bufferSize=96,valid_size=64,target_q=5000,clip_delta=1,min_reward=-1,max_reward=1"
+agent_params="num_samples="$num_samples",sample_collect="$sample_collect",lr="$lr",ep=1,ep_end="$eps_end",srdims="$srdims",ep_endt="$eps_endt",discount="$discount",hist_len=1,learn_start="$learn_start",replay_memory="$replay_memory",update_freq="$update_freq",n_replay="$n_replay",network="$netfile",preproc="$preproc_net",state_dim="$state_dim",minibatch_size=64,rescale_r=1,ncols="$ncols",bufferSize=96,valid_size=64,target_q=5000,clip_delta=1,min_reward=-1,max_reward=1"
 steps=50000000
 eval_freq=3000 #250000
 eval_steps=$6 #125000
