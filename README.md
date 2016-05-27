@@ -20,9 +20,9 @@ In this environment, the agent's objective is to gather ammo.
 ```
 ./runner.sh
 ```
-* Insructions to run subgoal scripts coming soon
+For subgoal discovery using normalized cuts, first pretrain the agent and save the weights. Then change the sample_collect to 1 and netfile to the saved weights file in run_gpu to collect SR samples. After that, run `subgoal/subgoal_discovery.m` with the appropriate hyperparameters described in the file.
  
 # Acknowledgements
 * [Deepmind's DQN codebase](https://github.com/kuz/DeepMind-Atari-Deep-Q-Learner)
-* [Facebook's MazeBase Environment](https://github.com/facebook/MazeBase).
-* [VizDoom](vizdoom.cs.put.edu.pl)
+* [Facebook's MazeBase Environment](https://github.com/facebook/MazeBase)
+* [VizDoom](https://github.com/Marqt/ViZDoom)

@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ -z "$1" ]
   then echo "Please provide a game name, seed number, dsr or dqn, gpu id, learn_start, eval_steps, number of color channels, feature dimension, collect data 0/1: 
-  ./run_gpu MovingGoalsMedium 8000 dsr 1 5000 500 1 256";
+  ./run_gpu MovingGoalsMedium 8000 dsr 1 5000 500 1 256 0";
   #1-game_name 2-seed 3-dsr/dqn 4-gpuid 5-learn_start 6-eval_steps 7-color 8-sr_dims 9-collect_sr
   # doom => ./run_gpu doom 8000 dsr 1 30000 10000 3 512 0
   exit 0
