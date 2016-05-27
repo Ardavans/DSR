@@ -14,7 +14,7 @@ In this environment, the agent's objective is to gather ammo.
 
 ### Illustration of MazeBase
 #### Random Policy  
-![random](https://drive.google.com/open?id=0B3yyTdZ1crn4ZmRyN0ZpOUc5SUE)
+![random](https://drive.google.com/drive/folders/0B3yyTdZ1crn4SG84Wk04Y0dWdTg)
 
 ## Instructions
 * To start training see:
