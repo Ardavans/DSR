@@ -12,9 +12,8 @@ In this environment, the agent's objective is to gather ammo.
 #### Policy after learning 
 ![DSR after convergence](http://i.imgur.com/25Pd85W.gif)
 
-### Illustration of MazeBase
-#### Random Policy  
-![random](https://drive.google.com/drive/folders/0B3yyTdZ1crn4SG84Wk04Y0dWdTg)
+### Other illustrations can be found here : 
+[DSR Illustrations](https://drive.google.com/open?id=0B3yyTdZ1crn4SG84Wk04Y0dWdTg)
 
 ## Instructions
 * To start training see:
