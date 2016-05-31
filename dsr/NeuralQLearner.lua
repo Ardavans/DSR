@@ -425,7 +425,7 @@ end
 
 
 function nql:motionScaling(s2, grads)
-    local scaling = 1.5
+    local scaling = 3
     local s2_reshaped = s2:reshape(self.minibatch_size, self.input_dims[1], self.input_dims[2], self.input_dims[3])
     local residual = s2_reshaped:clone():zero()
 
