@@ -590,7 +590,7 @@ function nql:perceive(reward, rawstate, terminal, testing, testing_ep)
     local chunk_size = 100
     if self.sample_collect and self.numSteps >= self.num_samples and self.numSteps > 2*chunk_size then 
         -- do a forward pass and extract msa, where a is randomly chosen among set of actions A
-        for i=1,desired_samples/chunk_size do
+        for i=1,self.num_samples/chunk_size do
 
             local s, a, r, s2, term = self.transitions:sample(chunk_size)
 

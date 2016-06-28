@@ -40,7 +40,7 @@ preproc_net="\"net_downsample_2x_full_y\""
 agent_name=$agent_folder"_"$1"_"$2"_"$3"_"$4
 ncols=$7
 state_dim=7056*${ncols}
-agent_params="num_samples="$num_samples",sample_collect="$sample_collect",lr="$lr",ep=1,ep_end="$eps_end",srdims="$srdims",ep_endt="$eps_endt",discount="$discount",hist_len=1,learn_start="$learn_start",replay_memory="$replay_memory",update_freq="$update_freq",n_replay="$n_replay",network="$netfile",preproc="$preproc_net",state_dim="$state_dim",minibatch_size=64,rescale_r=1,ncols="$ncols",bufferSize=96,valid_size=64,target_q=5000,clip_delta=1,min_reward=-1,max_reward=1"
+agent_params="num_samples="$num_samples",sample_collect="$sample_collect",lr="$lr",ep=1,ep_end="$eps_end",srdims="$srdims",ep_endt="$eps_endt",discount="$discount",hist_len=1,learn_start="$learn_start",replay_memory="$replay_memory",update_freq="$update_freq",n_replay="$n_replay",network="$netfile",preproc="$preproc_net",state_dim="$state_dim",minibatch_size=64,rescale_r=1,ncols="$ncols",bufferSize=128,valid_size=64,target_q=5000,clip_delta=1,min_reward=-1,max_reward=1"
 steps=50000000
 eval_freq=3000 #250000
 eval_steps=$6 #125000
